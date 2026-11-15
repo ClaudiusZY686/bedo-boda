@@ -512,3 +512,5 @@ html[dir="rtl"] .mattonella .freccia{ transform:scaleX(-1); }
 html[dir="rtl"] .hero__titolo .riga{ text-align:right; }
 /* prezzi: sempre "5,00 €", anche dentro testo arabo */
 .mattonella .da b, .prezzo, .costo, .totale__cifra, .taglia span{ direction:ltr; unicode-bidi:isolate; }
+/* nel nastro il separatore resta sempre a destra della parola, anche per l'arabo */
+.nastro__pista span{ direction:ltr; unicode-bidi:isolate; }
