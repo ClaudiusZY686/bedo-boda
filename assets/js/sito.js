@@ -176,11 +176,11 @@
   /* ---------- bottone "torna su" ---------- */
   var su = document.querySelector('.su-btn');
   if (su) {
-    /* compare dopo un po' di scorrimento, ma si toglie di mezzo quando sul telefono
+    /* compare dopo un po' di scorrimento, ma si toglie di mezzo quando
        il totale del "Componi" e' incollato in basso (lo coprirebbe) */
     var aggiornaSu = function () {
       var copre = false;
-      if (componi && !componi.hidden && window.innerWidth < 1080) {
+      if (componi && !componi.hidden) {
         var b = componi.getBoundingClientRect();
         copre = b.top < window.innerHeight && b.bottom > 0;
       }

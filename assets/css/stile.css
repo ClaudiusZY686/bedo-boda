@@ -491,7 +491,7 @@ html[dir="rtl"] .mattonella .freccia{ transform:scaleX(-1); }
   .qr-telefono p{ margin:.3em 0 0; color:var(--grigio); font-weight:600; }
 }
 @media (min-width:1080px){
-  .koshari-griglia .componi{ position:sticky; top:150px; margin-top:18px; }
+  .koshari-griglia .componi{ margin-top:18px; }
   .koshari-griglia .componi .aggiunte{ grid-template-columns:1fr; }
 }
 
@@ -518,15 +518,21 @@ html[dir="rtl"] .hero__titolo .riga{ text-align:right; }
 /* ---------- 17. TELEFONO SU COMPUTER, TOTALE SEMPRE VISIBILE ---------- */
 .testata__tel-num{ display:none; }
 @media (min-width:1080px){
-  .testata__tel{ width:auto; padding:0 16px 0 12px; gap:8px; border-radius:999px; font-weight:800; font-size:.95rem; text-decoration:none; }
+  .testata__tel{ width:auto; padding-block:0; padding-inline:12px 16px; gap:8px; border-radius:999px; font-weight:800; font-size:.95rem; text-decoration:none; }
   .testata__tel-num{ display:inline; white-space:nowrap; }
 }
-.avviso{ max-width:calc(100vw - 32px); text-align:center; white-space:normal; }
-/* sul telefono il totale del "Componi" resta incollato in basso mentre scegli */
-@media (max-width:1079px){
-  .componi .totale{ position:sticky; bottom:12px; z-index:5; box-shadow:0 0 0 3px var(--bianco), var(--ombra-piccola); }
+.avviso{ width:max-content; max-width:calc(100vw - 32px); text-align:center; white-space:normal; }
+/* su ogni schermo il totale del "Componi" resta incollato in basso mentre scegli */
+.componi .totale{ position:sticky; bottom:12px; z-index:5; box-shadow:0 0 0 3px var(--bianco), var(--ombra-piccola); }
+/* su schermi grandi e alti il riquadro intero segue lo scorrimento */
+@media (min-width:1080px) and (min-height:960px){
+  .koshari-griglia .componi{ position:sticky; top:150px; }
 }
 /* lampo di colore quando il totale cambia (solo colore: nessun movimento) */
 .totale--lampo{ animation:lampo .6s ease-out; }
 @keyframes lampo{ 0%{ background-color:var(--verde); } 100%{ background-color:var(--inchiostro); } }
 @media (prefers-reduced-motion:reduce){ .totale--lampo{ animation:none; } }
+
+/* il marchio nel titolo non va mai a capo dentro la parola */
+.hero__titolo .riga{ white-space:nowrap; }
+@media (min-width:720px) and (max-width:1079px){ .hero__titolo{ font-size:clamp(3.4rem, 9.5vw, 7.4rem); } }
