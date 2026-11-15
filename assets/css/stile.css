@@ -1,0 +1,514 @@
+/* =====================================================================
+   Bedo & Boda — Koshari & Grill
+   Stile del sito digitale. Mobile first. Proprieta' logiche ovunque:
+   con dir="rtl" (arabo) il layout si ribalta da solo.
+   ===================================================================== */
+
+/* ---------- 1. FONDAMENTA ---------- */
+:root{
+  --inchiostro:#1A120C;
+  --carta:#FFF3DC;
+  --carta-2:#FFE6B8;
+  --bianco:#FFFFFF;
+  --rosso:#D7381F;          /* solo titoli grandi o con testo bianco */
+  --rosso-scuro:#A62711;    /* testo rosso piccolo, sfondo per testo bianco piccolo */
+  --oro:#F5A623;
+  --oro-chiaro:#FFD27A;
+  --verde:#0E6655;
+  --verde-scuro:#0A4D40;
+  --lente:#7A4A1F;
+  --grigio:#5C4A3D;         /* descrizioni: 7.6:1 su carta */
+
+  --bordo:3px solid var(--inchiostro);
+  --ombra:6px 6px 0 var(--inchiostro);
+  --ombra-piccola:4px 4px 0 var(--inchiostro);
+  --raggio:16px;
+  --raggio-piccolo:10px;
+
+  --titoli:'Lalezar', 'Cairo', system-ui, sans-serif;
+  --testo:'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --molla:cubic-bezier(.34,1.56,.64,1);
+  --morbido:cubic-bezier(.22,.61,.36,1);
+
+  --largo:1120px;
+  --margine:clamp(16px, 4.5vw, 32px);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:84px; }
+@media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
+body{
+  margin:0; background:var(--carta); color:var(--inchiostro);
+  font-family:var(--testo); font-size:17px; line-height:1.55; font-weight:500;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+img,svg{ display:block; max-width:100%; }
+a{ color:inherit; }
+button{ font:inherit; color:inherit; }
+:focus-visible{ outline:3px solid var(--rosso-scuro); outline-offset:3px; border-radius:6px; }
+.nascosto-visivo{ position:absolute!important; width:1px; height:1px; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0; }
+
+/* L'arabo non si spazia mai: spezzerebbe le legature. Gli serve piu' interlinea. */
+:lang(ar){ letter-spacing:0!important; text-transform:none!important; line-height:1.75; }
+.titolo:lang(ar), h1:lang(ar), h2:lang(ar){ line-height:1.35; }
+
+.contenitore{ width:min(100% - 2*var(--margine), var(--largo)); margin-inline:auto; }
+
+/* Lingua: il markup contiene entrambe; si mostra quella attiva.
+   Senza JS resta l'italiano. */
+html:not([lang="ar"]) [data-solo="ar"]{ display:none!important; }
+html[lang="ar"] [data-solo="it"]{ display:none!important; }
+
+/* ---------- 2. COMPONENTI BASE ---------- */
+.scheda{ background:var(--bianco); border:var(--bordo); border-radius:var(--raggio); box-shadow:var(--ombra); }
+
+.bottone{
+  display:inline-flex; align-items:center; justify-content:center; gap:.55em;
+  min-height:52px; padding:.7em 1.3em;
+  background:var(--oro); color:var(--inchiostro);
+  border:var(--bordo); border-radius:999px; box-shadow:var(--ombra-piccola);
+  font-weight:800; font-size:1rem; text-decoration:none; cursor:pointer;
+  transition:transform .15s var(--morbido), box-shadow .15s var(--morbido), background-color .2s;
+}
+.bottone svg{ width:22px; height:22px; flex:0 0 auto; }
+.bottone:hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--inchiostro); }
+.bottone:active{ transform:translate(3px,3px); box-shadow:1px 1px 0 var(--inchiostro); }
+.bottone--rosso{ background:var(--rosso-scuro); color:var(--bianco); }
+.bottone--verde{ background:var(--verde); color:var(--bianco); }
+.bottone--chiaro{ background:var(--bianco); }
+html[dir="rtl"] .bottone .u-freccia{ transform:scaleX(-1); }
+
+.etichetta{
+  display:inline-flex; align-items:center; gap:.4em;
+  padding:.28em .8em; border:2.5px solid var(--inchiostro); border-radius:999px;
+  background:var(--bianco); font-weight:800; font-size:.82rem; letter-spacing:.06em; text-transform:uppercase;
+}
+.etichetta--verde{ background:var(--verde); color:var(--bianco); }
+.etichetta--oro{ background:var(--oro); }
+.etichetta--rosso{ background:var(--rosso-scuro); color:var(--bianco); }
+.etichetta svg{ width:16px; height:16px; }
+
+.prezzo{
+  display:inline-block; flex:0 0 auto;
+  padding:.18em .62em; border:2.5px solid var(--inchiostro); border-radius:10px;
+  background:var(--oro); box-shadow:3px 3px 0 var(--inchiostro);
+  font-family:var(--testo); font-weight:900; font-size:1.02rem; white-space:nowrap;
+  font-variant-numeric:tabular-nums; direction:ltr; transform:rotate(-2deg);
+  transition:transform .25s var(--molla);
+}
+
+/* ---------- 3. TESTATA ---------- */
+.testata{
+  position:sticky; top:0; z-index:50;
+  background:var(--carta); border-bottom:var(--bordo);
+}
+.testata__riga{ display:flex; align-items:center; gap:12px; min-height:64px; }
+.marchio{ display:flex; align-items:center; gap:10px; text-decoration:none; margin-inline-end:auto; }
+.marchio__stella{ width:40px; height:40px; color:var(--oro); flex:0 0 auto; }
+.marchio__nome{ font-family:var(--titoli); font-size:1.45rem; line-height:1; text-transform:uppercase; white-space:nowrap; }
+.marchio__nome b{ color:var(--rosso); font-weight:400; }
+.lingue{ display:flex; border:2.5px solid var(--inchiostro); border-radius:999px; overflow:hidden; background:var(--bianco); }
+.lingue button{
+  min-width:48px; min-height:44px; padding:0 .8em; border:0; background:transparent; cursor:pointer;
+  font-weight:800; font-size:.92rem;
+}
+.lingue button + button{ border-inline-start:2.5px solid var(--inchiostro); }
+.lingue button[aria-pressed="true"]{ background:var(--inchiostro); color:var(--oro); }
+.lingue button:lang(ar){ font-size:1rem; line-height:1; }
+.testata__tel{
+  display:inline-grid; place-items:center; width:46px; height:46px; flex:0 0 auto;
+  border:2.5px solid var(--inchiostro); border-radius:50%; background:var(--oro); text-decoration:none;
+}
+.testata__tel svg{ width:22px; height:22px; }
+
+/* ---------- 4. NASTRO SCORREVOLE ---------- */
+.nastro{
+  overflow:hidden; background:var(--inchiostro); color:var(--oro);
+  border-block:var(--bordo); white-space:nowrap; direction:ltr;
+}
+.nastro__pista{ display:inline-flex; gap:2.2rem; padding:.62rem 0; animation:scorri 32s linear infinite; }
+.nastro__pista span{ font-family:var(--titoli); font-size:1.35rem; text-transform:uppercase; display:inline-flex; align-items:center; gap:2.2rem; }
+.nastro__pista span::after{ content:""; width:14px; height:14px; background:var(--rosso); transform:rotate(45deg); border:2px solid var(--oro); }
+@keyframes scorri{ to{ transform:translateX(-50%); } }
+@media (prefers-reduced-motion:reduce){ .nastro__pista{ animation:none; } }
+
+/* ---------- 5. HERO (home) ---------- */
+.hero{ position:relative; overflow:hidden; padding:28px 0 46px; }
+.hero::before{
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:.09;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 100 100'%3E%3Cpath d='M50 6.5L62.4 20.1 80.8 19.2 79.9 37.6 93.5 50 79.9 62.4 80.8 80.8 62.4 79.9 50 93.5 37.6 79.9 19.2 80.8 20.1 62.4 6.5 50 20.1 37.6 19.2 19.2 37.6 20.1z' fill='none' stroke='%231A120C' stroke-width='4'/%3E%3C/svg%3E");
+  background-size:72px 72px;
+}
+.hero__griglia{ position:relative; display:grid; gap:28px; align-items:center; }
+.hero__kicker{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+.hero__titolo{
+  margin:0; font-family:var(--titoli); font-weight:400; text-transform:uppercase;
+  font-size:clamp(3.4rem, 16vw, 7.4rem); line-height:.88; letter-spacing:.005em;
+}
+.hero__titolo .e{ color:var(--rosso); display:inline-block; }
+.hero__titolo .riga{ display:block; }
+.hero__ar{ font-family:var(--titoli); font-size:clamp(2rem, 9vw, 3.4rem); color:var(--verde); margin:.15em 0 0; line-height:1.2; }
+.hero__sotto{ font-size:1.12rem; font-weight:700; margin:.6em 0 0; max-width:34ch; }
+.slogan{ margin:18px 0 0; padding:14px 16px; background:var(--bianco); border:var(--bordo); border-radius:var(--raggio-piccolo); box-shadow:var(--ombra-piccola); max-width:520px; }
+.slogan__ar{ font-family:var(--titoli); font-size:1.3rem; line-height:1.5; margin:0; direction:rtl; text-align:right; }
+.slogan__it{ margin:.3em 0 0; font-size:.95rem; color:var(--grigio); font-style:italic; }
+.hero__azioni{ display:flex; flex-wrap:wrap; gap:12px; margin-top:22px; }
+
+.hero__piatto{ position:relative; width:min(78vw, 420px); margin-inline:auto; aspect-ratio:1; }
+.hero__piatto .disco{ position:absolute; inset:6%; border-radius:50%; background:var(--oro); border:var(--bordo); box-shadow:var(--ombra); }
+.hero__piatto .ciotola{ position:absolute; inset:16% 10% 8%; width:80%; height:auto; }
+.hero__piatto .vapore{ position:absolute; inset:0 24% 50%; width:52%; overflow:visible; }
+.vapore path{ fill:none; stroke:var(--inchiostro); stroke-width:4; stroke-linecap:round; opacity:0; animation:vapore 3.2s ease-in-out infinite; }
+.vapore path:nth-child(2){ animation-delay:1s; }
+.vapore path:nth-child(3){ animation-delay:2.1s; }
+@keyframes vapore{
+  0%{ opacity:0; transform:translateY(16px); }
+  30%{ opacity:.85; }
+  100%{ opacity:0; transform:translateY(-22px); }
+}
+.timbro{
+  position:absolute; inset-inline-end:-2%; top:2%; width:34%; aspect-ratio:1; color:var(--rosso-scuro);
+  display:grid; place-items:center;
+}
+.timbro svg{ position:absolute; inset:0; width:100%; height:100%; animation:gira 24s linear infinite; }
+.timbro span{ position:relative; font-family:var(--titoli); color:var(--bianco); font-size:clamp(.95rem, 4vw, 1.25rem); line-height:1; text-align:center; text-transform:uppercase; }
+@keyframes gira{ to{ transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce){ .vapore path{ animation:none; opacity:.6; } .timbro svg{ animation:none; } }
+
+/* entrata della hero: lettere che cadono */
+.js-anim .hero__titolo .lettera{ display:inline-block; opacity:0; transform:translateY(-60%) rotate(-8deg); }
+.js-anim .hero.parti .hero__titolo .lettera{ animation:cade .7s var(--molla) forwards; animation-delay:calc(var(--i) * 45ms); }
+@keyframes cade{ to{ opacity:1; transform:none; } }
+.js-anim .hero__piatto{ opacity:0; transform:scale(.8) rotate(-6deg); }
+.js-anim .hero.parti .hero__piatto{ animation:sale .9s var(--molla) .35s forwards; }
+@keyframes sale{ to{ opacity:1; transform:none; } }
+
+/* ---------- 6. SEZIONI GENERICHE ---------- */
+.blocco{ padding:56px 0; }
+.blocco--scuro{ background:var(--inchiostro); color:var(--carta); }
+.blocco--verde{ background:var(--verde); color:var(--bianco); border-block:var(--bordo); }
+.blocco--crema{ background:var(--carta-2); border-block:var(--bordo); }
+.sopratitolo{ display:inline-block; font-weight:800; font-size:.85rem; letter-spacing:.14em; text-transform:uppercase; color:var(--rosso-scuro); margin:0 0 .4em; }
+.blocco--scuro .sopratitolo{ color:var(--oro); }
+.blocco--verde .sopratitolo{ color:var(--bianco); }
+.titolo{ font-family:var(--titoli); font-weight:400; font-size:clamp(2.3rem, 9vw, 4rem); line-height:.95; margin:0; text-transform:uppercase; }
+.titolo .sub{ display:block; font-size:.62em; color:var(--rosso); margin-top:.15em; text-transform:none; }
+.blocco--scuro .titolo .sub, .blocco--verde .titolo .sub{ color:var(--oro); }
+.paragrafo{ max-width:56ch; font-size:1.06rem; }
+
+/* ---------- 7. IL KOSHARI A STRATI (home) ---------- */
+.strati{ display:grid; gap:28px; align-items:center; margin-top:28px; }
+.strati__piatto{ width:min(86vw, 380px); margin-inline:auto; }
+.strati__piatto svg{ width:100%; height:auto; overflow:visible; }
+.strato{ transition:transform .7s var(--molla), opacity .4s; }
+.js-anim .strati:not(.visibile) .strato{ transform:translateY(-90px); opacity:0; }
+.strati.visibile .strato{ transition-delay:calc(var(--i) * 220ms); }
+.strati__lista{ list-style:none; margin:0; padding:0; display:grid; gap:10px; counter-reset:s; }
+.strati__lista li{
+  display:flex; align-items:center; gap:12px; padding:10px 14px;
+  background:var(--bianco); border:2.5px solid var(--inchiostro); border-radius:12px; font-weight:700;
+  transition:transform .6s var(--molla), opacity .4s;
+}
+.js-anim .strati:not(.visibile) .strati__lista li{ transform:translateX(-24px); opacity:0; }
+html[dir="rtl"].js-anim .strati:not(.visibile) .strati__lista li{ transform:translateX(24px); }
+.strati.visibile .strati__lista li{ transition-delay:calc(var(--i) * 220ms + 120ms); }
+.strati__lista li::before{
+  counter-increment:s; content:counter(s);
+  display:grid; place-items:center; width:30px; height:30px; flex:0 0 auto;
+  border-radius:50%; border:2.5px solid var(--inchiostro); background:var(--c, var(--oro)); color:var(--t, var(--inchiostro)); font-weight:900; font-size:.9rem;
+}
+.condimenti{ display:grid; gap:12px; margin-top:16px; }
+.condimento{ padding:12px 14px; border:2.5px dashed var(--inchiostro); border-radius:12px; background:var(--carta); }
+.condimento b{ font-family:var(--titoli); font-weight:400; font-size:1.3rem; margin-inline-end:.4em; }
+.condimento svg{ display:inline-block; width:20px; height:20px; vertical-align:-3px; }
+
+/* ---------- 8. MATTONELLE (home) ---------- */
+.mattonelle{ display:grid; gap:18px; margin-top:28px; }
+.mattonella{
+  position:relative; display:grid; grid-template-columns:76px 1fr auto; gap:14px; align-items:center;
+  padding:16px; text-decoration:none; background:var(--bianco);
+  border:var(--bordo); border-radius:var(--raggio); box-shadow:var(--ombra);
+  transition:transform .2s var(--morbido), box-shadow .2s var(--morbido);
+}
+.mattonella:hover{ transform:translate(-3px,-3px); box-shadow:9px 9px 0 var(--inchiostro); }
+.mattonella:active{ transform:translate(3px,3px); box-shadow:2px 2px 0 var(--inchiostro); }
+.mattonella svg.icona{ width:76px; height:76px; transition:transform .45s var(--molla); }
+.mattonella:hover svg.icona{ transform:rotate(-8deg) scale(1.08); }
+.mattonella h3{ margin:0; font-family:var(--titoli); font-weight:400; font-size:1.7rem; line-height:1; text-transform:uppercase; }
+.mattonella h3 .sub{ display:block; font-size:.72em; color:var(--rosso-scuro); margin-top:.15em; }
+.mattonella p{ margin:.3em 0 0; font-size:.92rem; color:var(--grigio); }
+.mattonella .da{ font-weight:900; font-size:.86rem; text-align:center; line-height:1.1; }
+.mattonella .da b{ display:block; font-size:1.2rem; }
+.mattonella .freccia{ position:absolute; inset-inline-end:14px; bottom:12px; width:22px; height:22px; opacity:.5; }
+html[dir="rtl"] .mattonella .freccia{ transform:scaleX(-1); }
+
+/* ---------- 9. PANE FRESCO ---------- */
+.pane{ display:grid; gap:20px; align-items:center; }
+.pane svg{ width:150px; height:150px; margin-inline:auto; }
+.pane h2{ color:var(--oro); }
+
+/* ---------- 10. INFORMAZIONI ---------- */
+.info{ display:grid; gap:16px; margin-top:26px; }
+.info__voce{ display:flex; gap:14px; align-items:flex-start; padding:18px; }
+.info__voce svg{ width:28px; height:28px; flex:0 0 auto; color:var(--rosso-scuro); margin-top:2px; }
+.info__voce h3{ margin:0; font-size:.82rem; letter-spacing:.12em; text-transform:uppercase; }
+.info__voce p{ margin:.2em 0 0; font-weight:700; font-size:1.08rem; }
+.info__voce a{ text-decoration-thickness:2px; text-underline-offset:4px; }
+
+/* ---------- 11. PIEDE ---------- */
+.piede{ background:var(--inchiostro); color:var(--carta); padding:44px 0 110px; }
+.piede__slogan{ font-family:var(--titoli); font-size:clamp(1.6rem, 6vw, 2.3rem); line-height:1.5; color:var(--oro); margin:0; direction:rtl; text-align:center; }
+.piede__slogan-it{ text-align:center; font-style:italic; margin:.4em auto 0; max-width:46ch; }
+.piede__righe{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px 18px; margin-top:26px; font-weight:700; font-size:.9rem; text-align:center; }
+.piede__righe span{ display:inline-flex; align-items:center; gap:18px; }
+.piede__righe span + span::before{ content:"\25C6"; color:var(--rosso); font-size:.7em; }
+.piede__legale{ margin:22px auto 0; max-width:62ch; text-align:center; font-size:.82rem; opacity:.85; }
+
+/* barra azioni fissa in basso, solo telefono */
+.barra{
+  position:fixed; inset-inline:12px; bottom:12px; z-index:60;
+  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  padding:8px; background:var(--carta); border:var(--bordo); border-radius:20px; box-shadow:var(--ombra-piccola);
+  padding-bottom:max(8px, env(safe-area-inset-bottom));
+}
+.barra .bottone{ min-height:48px; padding-inline:.6em; font-size:.95rem; box-shadow:none; }
+.barra .bottone:hover{ transform:none; box-shadow:none; }
+
+/* ---------- 12. RIVELAZIONI ----------
+   Nascoste SOLO se il JS ha messo .js-anim: senza JS, o se qualcosa
+   si rompe, tutto resta visibile. */
+.rivela{ transition:opacity .6s var(--morbido), transform .7s var(--molla); }
+.js-anim .rivela:not(.visibile){ opacity:0; transform:translateY(28px); }
+.rivela.visibile{ transition-delay:calc(var(--i, 0) * 70ms); }
+@media (prefers-reduced-motion:reduce){
+  .js-anim .rivela:not(.visibile), .js-anim .strati:not(.visibile) .strato,
+  .js-anim .strati:not(.visibile) .strati__lista li{ opacity:1; transform:none; }
+  .js-anim .hero__titolo .lettera, .js-anim .hero__piatto{ opacity:1; transform:none; animation:none!important; }
+}
+
+/* ======================  PAGINA MENU  ====================== */
+.menu-testa{ padding:26px 0 20px; }
+.menu-testa .titolo{ font-size:clamp(2.8rem, 13vw, 5rem); }
+.menu-testa__badge{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+
+.schede-cat{
+  position:sticky; top:67px; z-index:40; background:var(--carta); border-bottom:var(--bordo);
+}
+.schede-cat__pista{
+  display:flex; gap:8px; overflow-x:auto; scroll-snap-type:x proximity; scrollbar-width:none;
+  padding:10px var(--margine);
+}
+.schede-cat__pista::-webkit-scrollbar{ display:none; }
+.schede-cat a{
+  flex:0 0 auto; scroll-snap-align:start;
+  display:inline-flex; align-items:center; gap:.45em; min-height:44px; padding:.35em .95em;
+  border:2.5px solid var(--inchiostro); border-radius:999px; background:var(--bianco);
+  font-weight:800; font-size:.95rem; text-decoration:none; white-space:nowrap;
+  transition:background-color .2s, color .2s, transform .2s var(--molla);
+}
+.schede-cat a svg{ width:24px; height:24px; }
+.schede-cat a[aria-current="true"]{ background:var(--inchiostro); color:var(--oro); transform:translateY(-1px); }
+
+.sezione{ padding:34px 0 14px; scroll-margin-top:144px; }
+.sezione__testa{
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
+  padding:14px 16px; background:var(--rosso-scuro); color:var(--bianco);
+  border:var(--bordo); border-radius:var(--raggio); box-shadow:var(--ombra);
+}
+.sezione__testa svg{ width:56px; height:56px; background:var(--carta); border:2.5px solid var(--inchiostro); border-radius:14px; padding:4px; }
+.sezione__testa h2{ margin:0; font-family:var(--titoli); font-weight:400; font-size:clamp(2rem, 8vw, 2.8rem); line-height:1; text-transform:uppercase; }
+.sezione__testa .sub{ font-family:var(--titoli); font-size:clamp(1.6rem, 6.5vw, 2.2rem); line-height:1; color:var(--oro-chiaro); }
+.sezione--verde .sezione__testa{ background:var(--verde-scuro); }
+.sezione--scura .sezione__testa{ background:var(--inchiostro); }
+.sezione--scura .sezione__testa .sub{ color:var(--oro); }
+
+.nota{
+  margin:18px 0 0; padding:12px 14px; border:2.5px dashed var(--inchiostro); border-radius:12px;
+  background:var(--carta-2); font-weight:700;
+}
+.nota p{ margin:0; }
+
+.voci{ list-style:none; margin:18px 0 0; padding:0; display:grid; gap:14px; }
+.voce{
+  display:grid; grid-template-columns:1fr auto; gap:4px 14px; align-items:start;
+  padding:14px 16px; background:var(--bianco);
+  border:2.5px solid var(--inchiostro); border-radius:14px; box-shadow:var(--ombra-piccola);
+  transition:transform .2s var(--morbido), box-shadow .2s var(--morbido);
+}
+.voce:hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--inchiostro); }
+.voce:hover .prezzo{ transform:rotate(0) scale(1.06); }
+.voce__nomi{ display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 10px; }
+.voce__nome{ margin:0; font-size:1.12rem; font-weight:800; line-height:1.3; }
+.voce__altro{ font-weight:700; color:var(--rosso-scuro); font-size:1.08rem; line-height:1.5; }
+.voce__desc{ grid-column:1 / -1; margin:2px 0 0; font-size:.95rem; color:var(--grigio); font-weight:600; }
+.voce__desc:lang(ar){ font-size:1rem; }
+.voce .piccante{ display:inline-flex; align-items:center; gap:4px; font-size:.78rem; font-weight:800; color:var(--rosso-scuro); }
+.voce .piccante svg{ width:18px; height:18px; }
+.voce--evidenza{ background:var(--oro-chiaro); border-width:3px; box-shadow:var(--ombra); }
+.voce--evidenza .voce__nome{ font-family:var(--titoli); font-weight:400; font-size:1.6rem; text-transform:uppercase; line-height:1; }
+.voce--evidenza .prezzo{ background:var(--rosso-scuro); color:var(--bianco); font-size:1.3rem; }
+.voce--aggiunta .prezzo{ background:var(--bianco); }
+
+/* ---------- COMPONI IL TUO KOSHARI ---------- */
+.componi{ margin-top:22px; padding:18px; }
+.componi h3{ margin:0 0 4px; font-family:var(--titoli); font-weight:400; font-size:1.8rem; line-height:1.05; text-transform:uppercase; }
+.componi__passo{ margin:18px 0 8px; font-weight:800; font-size:.82rem; letter-spacing:.12em; text-transform:uppercase; color:var(--rosso-scuro); }
+.taglie{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.taglia{ position:relative; }
+.taglia input{ position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; }
+.taglia label{
+  display:grid; justify-items:center; gap:2px; padding:12px 6px 10px; text-align:center; cursor:pointer;
+  border:2.5px solid var(--inchiostro); border-radius:14px; background:var(--carta);
+  transition:background-color .2s, transform .25s var(--molla), box-shadow .2s;
+}
+.taglia svg{ height:auto; transition:transform .35s var(--molla); }
+.taglia[data-t="S"] svg{ width:46px; height:46px; } .taglia[data-t="M"] svg{ width:58px; height:58px; } .taglia[data-t="L"] svg{ width:70px; height:70px; }
+.taglia label{ align-content:end; min-height:132px; height:100%; }
+.taglia b{ font-size:.95rem; line-height:1.2; }
+.taglia span{ font-weight:900; font-variant-numeric:tabular-nums; direction:ltr; }
+.taglia input:checked + label{ background:var(--oro); box-shadow:var(--ombra-piccola); transform:translate(-2px,-2px); }
+.taglia input:checked + label svg{ transform:rotate(-8deg) scale(1.08); }
+.taglia input:focus-visible + label{ outline:3px solid var(--rosso-scuro); outline-offset:3px; }
+
+.aggiunte{ display:grid; gap:10px; }
+.aggiunta{ position:relative; }
+.aggiunta input{ position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; }
+.aggiunta label{
+  display:grid; grid-template-columns:30px 1fr auto; gap:12px; align-items:center;
+  min-height:56px; padding:10px 14px; cursor:pointer;
+  border:2.5px solid var(--inchiostro); border-radius:14px; background:var(--carta);
+  transition:background-color .2s;
+}
+.aggiunta .casella{
+  display:grid; place-items:center; width:30px; height:30px; border:2.5px solid var(--inchiostro); border-radius:8px; background:var(--bianco);
+  transition:background-color .2s, transform .3s var(--molla);
+}
+.aggiunta .casella svg{ width:20px; height:20px; opacity:0; transform:scale(.4); transition:opacity .15s, transform .3s var(--molla); }
+.aggiunta input:checked + label{ background:var(--oro-chiaro); }
+.aggiunta input:checked + label .casella{ background:var(--verde); color:var(--bianco); transform:rotate(-6deg); }
+.aggiunta input:checked + label .casella svg{ opacity:1; transform:none; }
+.aggiunta input:focus-visible + label{ outline:3px solid var(--rosso-scuro); outline-offset:3px; }
+.aggiunta .nome{ font-weight:800; line-height:1.25; }
+.aggiunta .nome small{ display:block; font-weight:600; color:var(--grigio); font-size:.85rem; }
+.aggiunta .costo{ font-weight:900; white-space:nowrap; direction:ltr; font-variant-numeric:tabular-nums; }
+
+.totale{
+  display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:18px;
+  padding:14px 16px; background:var(--inchiostro); color:var(--carta); border-radius:14px;
+}
+.totale__riepilogo{ font-weight:700; font-size:.92rem; line-height:1.35; }
+.totale__cifra{ font-family:var(--titoli); color:var(--oro); font-size:2.2rem; line-height:1; white-space:nowrap; direction:ltr; font-variant-numeric:tabular-nums; }
+.totale__cifra.salta{ animation:salta .45s var(--molla); }
+@keyframes salta{ 40%{ transform:scale(1.18) rotate(-3deg); } }
+.componi__nota{ margin:10px 0 0; font-size:.85rem; color:var(--grigio); }
+
+/* ---------- 13. LARGHEZZE MAGGIORI ---------- */
+@media (min-width:720px){
+  body{ font-size:18px; }
+  .hero{ padding:48px 0 72px; }
+  .hero__griglia{ grid-template-columns:1.15fr .85fr; }
+  .strati{ grid-template-columns:1fr 1fr; }
+  .mattonelle{ grid-template-columns:1fr 1fr; }
+  .info{ grid-template-columns:repeat(3,1fr); }
+  .pane{ grid-template-columns:auto 1fr; }
+  .voci{ grid-template-columns:1fr 1fr; }
+  .voci .voce--evidenza{ grid-column:1 / -1; }
+  .componi{ padding:26px; }
+  .aggiunte{ grid-template-columns:1fr 1fr; }
+  .barra{ display:none; }
+  .piede{ padding-bottom:44px; }
+}
+@media (min-width:1080px){
+  .mattonelle{ grid-template-columns:repeat(4,1fr); }
+  .mattonella{ grid-template-columns:1fr; text-align:start; }
+  .mattonella svg.icona{ width:96px; height:96px; }
+  .koshari-griglia{ display:grid; grid-template-columns:1.05fr .95fr; gap:26px; align-items:start; }
+}
+
+/* ---------- 14. STAMPA DALLA PAGINA WEB ----------
+   Chi stampa direttamente il sito ottiene una lista pulita. Il menu da
+   plastificare e' un file a parte (stampa/), impaginato apposta. */
+@media print{
+  .testata, .schede-cat, .barra, .nastro, .lingue, .componi, .hero__piatto{ display:none!important; }
+  body{ background:#fff; }
+  .voce, .scheda, .sezione__testa{ box-shadow:none!important; }
+  .js-anim .rivela{ opacity:1!important; transform:none!important; }
+}
+
+/* ---------- 15. AGGIUNTE: navigazione, avvisi, accessibilita' ---------- */
+.salta{
+  position:absolute; inset-inline-start:12px; top:-80px; z-index:100;
+  padding:.6em 1em; background:var(--inchiostro); color:var(--oro); border-radius:10px; font-weight:800; text-decoration:none;
+}
+.salta:focus{ top:12px; }
+.marchio__nome:lang(it){ text-transform:uppercase; }
+.testata__nav{ display:none; gap:6px; }
+.testata__nav a{
+  display:inline-flex; align-items:center; min-height:44px; padding:0 .9em; border-radius:999px;
+  font-weight:800; text-decoration:none; transition:background-color .2s;
+}
+.testata__nav a:hover{ background:var(--carta-2); }
+.testata__tel{ display:none; }
+@media (min-width:720px){ .testata__nav, .testata__tel{ display:inline-flex; } }
+
+.avviso{
+  position:fixed; left:50%; bottom:96px; z-index:90; transform:translate(-50%, 30px); opacity:0;
+  padding:.7em 1.2em; background:var(--inchiostro); color:var(--oro); border-radius:999px; font-weight:800;
+  transition:opacity .2s, transform .3s var(--molla); pointer-events:none;
+}
+.avviso.su{ opacity:1; transform:translate(-50%, 0); }
+
+.su-btn{
+  position:fixed; inset-inline-end:16px; bottom:16px; z-index:60;
+  display:grid; place-items:center; width:52px; height:52px;
+  background:var(--oro); border:var(--bordo); border-radius:50%; box-shadow:var(--ombra-piccola);
+  opacity:0; transform:translateY(20px) scale(.8); pointer-events:none;
+  transition:opacity .2s, transform .3s var(--molla);
+}
+.su-btn svg{ width:24px; height:24px; }
+.su-btn.su{ opacity:1; transform:none; pointer-events:auto; }
+.piede--senza-barra{ padding-bottom:44px; }
+
+.componi[hidden]{ display:none; }
+.koshari-extra{ margin-top:22px; }
+.koshari-extra > h3{ margin:0; font-family:var(--titoli); font-weight:400; font-size:1.6rem; line-height:1.1; text-transform:uppercase; }
+.koshari-extra .invito{ margin:.2em 0 0; font-weight:700; color:var(--grigio); }
+.ingredienti{ margin:16px 0 0; font-weight:700; font-size:1.05rem; }
+.ingredienti b{ color:var(--rosso-scuro); }
+.etichetta-taglia{
+  display:inline-grid; place-items:center; width:28px; height:28px; margin-inline-end:8px; vertical-align:2px;
+  border:2.5px solid var(--inchiostro); border-radius:8px; background:var(--carta-2); font-size:.85rem; font-weight:900;
+}
+.mattonella .conta{ font-weight:700; }
+.blocco--verde .paragrafo{ font-size:1.12rem; }
+.dove__azioni{ display:flex; flex-wrap:wrap; gap:12px; margin-top:22px; }
+.menu-testa__azioni{ margin:16px 0 0; }
+.qr-telefono{ display:none; }
+@media (min-width:720px){
+  .qr-telefono{ display:flex; align-items:center; gap:22px; margin-top:28px; padding:18px 22px; max-width:560px; }
+  .qr-telefono__codice{ width:132px; flex:0 0 auto; padding:6px; background:#fff; border:2.5px solid var(--inchiostro); border-radius:12px; }
+  .qr-telefono__codice svg{ width:100%; height:auto; }
+  .qr-telefono h3{ margin:0; font-family:var(--titoli); font-weight:400; font-size:1.7rem; line-height:1.1; text-transform:uppercase; }
+  .qr-telefono p{ margin:.3em 0 0; color:var(--grigio); font-weight:600; }
+}
+@media (min-width:1080px){
+  .koshari-griglia .componi{ position:sticky; top:150px; margin-top:18px; }
+  .koshari-griglia .componi .aggiunte{ grid-template-columns:1fr; }
+}
+
+/* ---------- 16. RIFINITURE DOPO LA VERIFICA ---------- */
+.marchio{ min-height:44px; }
+.piede__righe a{ display:inline-flex; align-items:center; min-height:44px; }
+.su-btn{ transform:translateY(20px); }
+@media (max-width:419px){
+  .mattonella{ grid-template-columns:60px minmax(0,1fr) auto; gap:12px; padding:14px; }
+  .mattonella svg.icona{ width:60px; height:60px; }
+  .mattonella h3{ font-size:1.4rem; }
+  .strati__lista li{ padding:9px 12px; }
+}
+/* il marchio resta sempre da sinistra a destra, anche in arabo */
+.hero__titolo .riga{ direction:ltr; unicode-bidi:isolate; }
+html[dir="rtl"] .hero__titolo .riga{ text-align:right; }
+/* prezzi: sempre "5,00 €", anche dentro testo arabo */
+.mattonella .da b, .prezzo, .costo, .totale__cifra, .taglia span{ direction:ltr; unicode-bidi:isolate; }

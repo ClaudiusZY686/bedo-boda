@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://claudiuszy686.github.io/bedo-boda/sitemap.xml
