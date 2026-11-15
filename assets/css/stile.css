@@ -514,3 +514,5 @@ html[dir="rtl"] .hero__titolo .riga{ text-align:right; }
 .mattonella .da b, .prezzo, .costo, .totale__cifra, .taglia span{ direction:ltr; unicode-bidi:isolate; }
 /* nel nastro il separatore resta sempre a destra della parola, anche per l'arabo */
 .nastro__pista span{ direction:ltr; unicode-bidi:isolate; }
+/* lo scorrimento "a scatto" rispetta il margine: la prima categoria non tocca il bordo */
+.schede-cat__pista{ scroll-padding-inline:var(--margine); }
