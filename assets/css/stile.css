@@ -399,8 +399,6 @@ html[dir="rtl"] .mattonella .freccia{ transform:scaleX(-1); }
 }
 .totale__riepilogo{ font-weight:700; font-size:.92rem; line-height:1.35; }
 .totale__cifra{ font-family:var(--titoli); color:var(--oro); font-size:2.2rem; line-height:1; white-space:nowrap; direction:ltr; font-variant-numeric:tabular-nums; }
-.totale__cifra.salta{ animation:salta .45s var(--molla); }
-@keyframes salta{ 40%{ transform:scale(1.18) rotate(-3deg); } }
 .componi__nota{ margin:10px 0 0; font-size:.85rem; color:var(--grigio); }
 
 /* ---------- 13. LARGHEZZE MAGGIORI ---------- */
@@ -516,3 +514,19 @@ html[dir="rtl"] .hero__titolo .riga{ text-align:right; }
 .nastro__pista span{ direction:ltr; unicode-bidi:isolate; }
 /* lo scorrimento "a scatto" rispetta il margine: la prima categoria non tocca il bordo */
 .schede-cat__pista{ scroll-padding-inline:var(--margine); }
+
+/* ---------- 17. TELEFONO SU COMPUTER, TOTALE SEMPRE VISIBILE ---------- */
+.testata__tel-num{ display:none; }
+@media (min-width:1080px){
+  .testata__tel{ width:auto; padding:0 16px 0 12px; gap:8px; border-radius:999px; font-weight:800; font-size:.95rem; text-decoration:none; }
+  .testata__tel-num{ display:inline; white-space:nowrap; }
+}
+.avviso{ max-width:calc(100vw - 32px); text-align:center; white-space:normal; }
+/* sul telefono il totale del "Componi" resta incollato in basso mentre scegli */
+@media (max-width:1079px){
+  .componi .totale{ position:sticky; bottom:12px; z-index:5; box-shadow:0 0 0 3px var(--bianco), var(--ombra-piccola); }
+}
+/* lampo di colore quando il totale cambia (solo colore: nessun movimento) */
+.totale--lampo{ animation:lampo .6s ease-out; }
+@keyframes lampo{ 0%{ background-color:var(--verde); } 100%{ background-color:var(--inchiostro); } }
+@media (prefers-reduced-motion:reduce){ .totale--lampo{ animation:none; } }

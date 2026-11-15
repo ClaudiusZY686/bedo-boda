@@ -97,22 +97,13 @@
   if (componi) componi.hidden = false;      /* il calcolatore esiste solo con JS attivo */
 
   var giro = 0;                              /* ogni nuova animazione annulla la precedente */
+  /* il prezzo cambia subito, al tocco; la barra fa solo un lampo di colore */
   function conta(da, a) {
-    var mio = ++giro;
-    if (riduci || da === null) { cifra.textContent = euro(a); return; }
-    var t0 = null, durata = 420;
-    function passo(t) {
-      if (mio !== giro) return;
-      if (t0 === null) t0 = t;
-      var p = Math.min(1, (t - t0) / durata);
-      var e = 1 - Math.pow(1 - p, 3);
-      cifra.textContent = euro(Math.round((da + (a - da) * e) / 10) * 10);
-      if (p < 1) requestAnimationFrame(passo); else cifra.textContent = euro(a);
-    }
-    requestAnimationFrame(passo);
-    /* se il browser rallenta i fotogrammi, il valore giusto arriva comunque */
-    setTimeout(function () { if (mio === giro) cifra.textContent = euro(a); }, durata + 80);
-    cifra.classList.remove('salta'); void cifra.offsetWidth; cifra.classList.add('salta');
+    giro++;
+    cifra.textContent = euro(a);
+    if (riduci || da === null) return;
+    var barra = cifra.parentNode;
+    barra.classList.remove('totale--lampo'); void barra.offsetWidth; barra.classList.add('totale--lampo');
   }
 
   function aggiornaComponi(anima) {
@@ -138,7 +129,7 @@
 
   /* ---------- condividi ---------- */
   var avviso;
-  function annuncia(testo) {
+  function annuncia(testo, durata) {
     if (!avviso) {
       avviso = document.createElement('div');
       avviso.className = 'avviso';
@@ -148,7 +139,7 @@
     avviso.textContent = testo;
     avviso.classList.add('su');
     clearTimeout(avviso._t);
-    avviso._t = setTimeout(function () { avviso.classList.remove('su'); }, 2400);
+    avviso._t = setTimeout(function () { avviso.classList.remove('su'); }, durata || 2400);
   }
   document.addEventListener('click', function (ev) {
     var b = ev.target.closest && ev.target.closest('[data-condividi]');
@@ -164,18 +155,40 @@
     }
   });
 
+  /* ---------- telefono su computer ----------
+     Su un PC il link tel: spesso non apre nulla: mostriamo il numero e lo copiamo.
+     Su telefono e tablet (dito, niente mouse) il link chiama normalmente. */
+  var conMouse = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  document.addEventListener('click', function (ev) {
+    var a = ev.target.closest && ev.target.closest('a[href^="tel:"]');
+    if (!a || !conMouse) return;
+    ev.preventDefault();
+    var numero = a.getAttribute('data-numero') || a.getAttribute('href').slice(4);
+    var ar = html.lang === 'ar';
+    var testo = (ar ? 'اتصل بينا على ' : 'Chiamaci al ') + '⁦' + numero + '⁩';
+    var copiato = ar ? ' — تم نسخ الرقم' : ' — numero copiato';
+    var mostra = function (ok) { annuncia(testo + (ok ? copiato : ''), 5000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(numero).then(function () { mostra(true); }, function () { mostra(false); });
+    } else { mostra(false); }
+  });
+
   /* ---------- bottone "torna su" ---------- */
   var su = document.querySelector('.su-btn');
   if (su) {
-    var inAttesa = false;
-    window.addEventListener('scroll', function () {
-      if (inAttesa) return;
-      inAttesa = true;
-      requestAnimationFrame(function () {
-        su.classList.toggle('su', window.scrollY > 900);
-        inAttesa = false;
-      });
-    }, { passive: true });
+    /* compare dopo un po' di scorrimento, ma si toglie di mezzo quando sul telefono
+       il totale del "Componi" e' incollato in basso (lo coprirebbe) */
+    var aggiornaSu = function () {
+      var copre = false;
+      if (componi && !componi.hidden && window.innerWidth < 1080) {
+        var b = componi.getBoundingClientRect();
+        copre = b.top < window.innerHeight && b.bottom > 0;
+      }
+      su.classList.toggle('su', window.scrollY > 900 && !copre);
+    };
+    window.addEventListener('scroll', aggiornaSu, { passive: true });
+    window.addEventListener('resize', aggiornaSu);
+    aggiornaSu();
   }
 
   /* lingua iniziale gia' impostata in <head>: qui si sincronizzano bottoni e titolo */
