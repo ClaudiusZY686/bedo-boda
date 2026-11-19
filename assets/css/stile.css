@@ -536,3 +536,31 @@ html[dir="rtl"] .hero__titolo .riga{ text-align:right; }
 /* il marchio nel titolo non va mai a capo dentro la parola */
 .hero__titolo .riga{ white-space:nowrap; }
 @media (min-width:720px) and (max-width:1079px){ .hero__titolo{ font-size:clamp(3.4rem, 9.5vw, 7.4rem); } }
+
+/* ---------- 18. IMMAGINI DELLE CATEGORIE, NOVITA', MENU' INCLUSO, 4 MISURE ---------- */
+.cat-img{
+  margin:14px 0 0; aspect-ratio:16 / 7; overflow:hidden;
+  border:var(--bordo); border-radius:var(--raggio); box-shadow:var(--ombra-piccola); background:var(--carta-2);
+}
+.cat-img img, .cat-img svg{ display:block; width:100%; height:100%; object-fit:cover; }
+@media (min-width:720px){ .cat-img{ aspect-ratio:16 / 5; } }
+.mattonella .icona--foto{ width:76px; height:76px; object-fit:cover; border:2.5px solid var(--inchiostro); border-radius:12px; }
+@media (min-width:1080px){ .mattonella .icona--foto{ width:100%; height:auto; aspect-ratio:4 / 3; } }
+
+.nuovo{
+  display:inline-flex; align-items:center; padding:.1em .6em; border:2px solid var(--inchiostro); border-radius:999px;
+  background:var(--rosso-scuro); color:var(--bianco); font-weight:800; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; line-height:1.45;
+}
+.voce__incluso{
+  grid-column:1 / -1; display:flex; align-items:center; gap:6px; margin:4px 0 0; padding:6px 10px;
+  background:var(--oro-chiaro); border:2px dashed var(--inchiostro); border-radius:10px; font-weight:800; font-size:.92rem;
+}
+.voce__incluso svg{ width:18px; height:18px; flex:0 0 auto; }
+
+.taglie{ grid-template-columns:repeat(2, 1fr); }
+@media (min-width:480px){ .taglie{ grid-template-columns:repeat(4, 1fr); } }
+.taglia[data-t="XL"] svg{ width:80px; height:80px; }
+@media (min-width:480px){
+  .taglia[data-t="S"] svg{ width:40px; height:40px; } .taglia[data-t="M"] svg{ width:50px; height:50px; }
+  .taglia[data-t="L"] svg{ width:60px; height:60px; } .taglia[data-t="XL"] svg{ width:70px; height:70px; }
+}
